@@ -5,9 +5,7 @@ Addon modificado a partir de ArchiTotem de codeshard para que funcione en la ver
 
 # Pasos de instalacion
 
-Ponen en Download Zip y descomprimen el archivo 
-
-![image](https://github.com/user-attachments/assets/c09bc6b0-7d7a-497f-b6d1-6f135c931d5c)
+Ponen en Download Zip y descomprimen el archivo ![image](https://github.com/user-attachments/assets/d52897c0-6749-43c3-a28c-96037a490e44)
 
 
 Dentro, existira una carpeta llamada "Architotem-ES-main", deben renombrar esa carpeta a Architotem y colocarlo en la carpeta de addons del juego.
