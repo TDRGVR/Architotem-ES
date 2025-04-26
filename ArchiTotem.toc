@@ -2,7 +2,7 @@
 ## Title: ArchiTotem |cff007fff [TurtleWoW]|r
 ## Notes: All totems on 4 barslots. TurtleWoW Edition!
 ## Version: 1.6.2
-## Author: Durotavich of Nordanaar TurtleWoW EU - Fork esES Zalrak de seas of south TurtleWoW SA
+## Author: Durotavich of Nordanaar TurtleWoW EU - Fork esES Zalrak of South_Seas TurtleWoW SA
 ## X-Original: Nahoom of Dragonblight EU
 ## X-Credits: RoadBlock, Lichery - localizations
 ## SavedVariablesPerCharacter: ArchiTotem_TotemData, ArchiTotem_Options
