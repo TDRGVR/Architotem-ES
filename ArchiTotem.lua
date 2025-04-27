@@ -390,7 +390,7 @@ function ArchiTotem_ActiveTotem()
     ArchiTotemActiveTotem[ArchiTotemCastedElement].casted = currentTime
     ArchiTotem_TotemData[ArchiTotemCastedButton].cooldownstarted = currentTime
 
-    ArchiTotem_UpdateAllCooldowns()
+    ArchiTotem_UpdateAllCooldowns_by_elementType(ArchiTotemCastedElement)
 
     -- Handle bottom-on-cast appearance option
     if ArchiTotem_Options["Appearance"].bottomoncast then
@@ -725,11 +725,46 @@ end
 function ArchiTotem_UpdateAllCooldowns()
     for k, v in ArchiTotem_TotemData do
         -- Handles the cooldowns of all totems
-        if v.casted == nil then v.casted = GetTime() - v.cooldown end
+        if v.casted == nil then 
+			v.casted = GetTime() - v.cooldown 
+		end
         local duration = 1.5
         if GetTime() > (v.casted + v.cooldown) then
-            if ArchiTotemCastedButton == k then duration = v.cooldown else duration = 1.5 end
+            if ArchiTotemCastedButton == k then 
+				duration = v.cooldown 
+			else 
+				duration = 1.5 
+			end
             ArchiTotem_UpdateCooldown(k, duration)
+        end
+    end
+end
+
+function ArchiTotem_UpdateAllCooldowns_by_elementType(elementType)
+    for k, v in pairs(ArchiTotem_TotemData) do
+        local buttonElement = string.match(k, "ArchiTotemButton_(%a+)%d+")
+        
+        if not elementType or buttonElement == elementType then
+            
+            -- Inicialización más robusta
+            if v.casted == nil then
+                v.casted = GetTime() - v.cooldown
+                v.cooldownstarted = v.casted  -- Asegurar consistencia
+            end
+
+            -- Siempre mostrar cooldown para el botón clickeado
+            if k == ArchiTotemCastedButton then
+                local currentTime = GetTime()
+                local elapsed = currentTime - (v.cooldownstarted or currentTime)
+                local remaining = math.max(0, v.cooldown - elapsed)
+                
+                -- Forzar visualización aunque el tiempo haya "terminado"
+                ArchiTotem_UpdateCooldown(k, remaining > 0 and remaining or 1.5)
+            
+            -- Para otros botones, lógica original
+            elseif GetTime() > (v.casted + v.cooldown) then
+                ArchiTotem_UpdateCooldown(k, 1.5)
+            end
         end
     end
 end
