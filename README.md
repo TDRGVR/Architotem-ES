@@ -1,8 +1,18 @@
-# Architotem turtle wow - esES
-Fork de ArchiTotem Turtle para la versión esES.
+# Architotem Turtle WoW - Multilenguaje
 
-Addon modificado a partir de ArchiTotem de codeshard para que funcione en español.  
-[Repositorio original](https://github.com/codeshard/ArchiTotem)
+Este addon es compatible con los siguientes idiomas:
+1. Español
+2. Inglés
+3. Portugués
+
+Architotem Turtle es un fork basado en el trabajo original de codeshard con el addon ArchiTotem Turtle [Repositorio original](https://github.com/codeshard/ArchiTotem)
+
+En esta versión se realizaron las siguientes mejoras:
+
+1. Soporte multilenguaje.
+2. Corrección del error de mensaje emergente al jugar en otros idiomas (ES/BR).
+3. Solución a un bug visual relacionado con los tiempos de reutilización (cooldowns).
+
 
 
 ## Pasos de instalación
