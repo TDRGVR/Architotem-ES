@@ -3,4 +3,5 @@
 	<Script file="Localization.lua"/>
 	<Script file="Localization_enUS.lua"/>
 	<Script file="Localization_esES.lua"/>
+	<Script file="Localization_ptBR.lua"/>
 </Ui>
