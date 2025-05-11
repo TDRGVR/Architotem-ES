@@ -33,3 +33,4 @@ In this version, the following improvements have been made:
 1. Multilanguage support.
 2. Fixed the error message popup when playing in other languages (ES/BR).
 3. Fixed a visual bug related to cooldowns.
+4. Fixed a bug where the totem icon was activated even if the player hadn't learned it.
