@@ -10,7 +10,7 @@ L["Strength of Earth Totem"] = "Tótem Fuerza de la Tierra"
 
 
 L["Searing Totem"] = "Tótem Ardiente"
-L["Fire Nova Totem"] = "Totem de Nova De Fuego"
+L["Fire Nova Totem"] = "Totem de Nova de Fuego"
 L["Magma Totem"] = "Tótem de Magma"
 L["Frost Resistance Totem"] = "Tótem de Resistencia a la Escarcha"
 L["Flametongue Totem"] = "Tótem Lengua de Llama"
