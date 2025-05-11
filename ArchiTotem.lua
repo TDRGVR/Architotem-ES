@@ -565,7 +565,7 @@ end
 function ArchiTotem_GetSpellId(spell)
     local localizeSpell = L[spell]
     local spellID = 0
-    for id = 1, 200 do
+    for id = 1, 205 do
         local spellName, _ = GetSpellName(id, BOOKTYPE_SPELL)
         if spellName and string.find(spellName, localizeSpell) then
             spellID = id
@@ -604,7 +604,10 @@ function ArchiTotem_OnClick()
             -- Switch them (the clicked and the one above)
         end
     else
-        ArchiTotem_CastTotem()
+		local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemData[this:GetName()].name)
+		if tooltipspellID > 0 then
+			ArchiTotem_CastTotem()
+		end
     end
 end
 
