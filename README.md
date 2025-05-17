@@ -22,7 +22,7 @@ Architotem Turtle wow Multilenguage is a fork based on the original work by code
 1. Open the **Turtle WoW Launcher** and go to the **ADDONS** tab.
 2. Click the **“➕ Añadir nuevo addon”** button at the bottom.
    
-   ![image](https://github.com/user-attachments/assets/c2ce427b-ddce-4c64-a1c5-a836c893934e)
+   <img src="https://github.com/user-attachments/assets/c2ce427b-ddce-4c64-a1c5-a836c893934e" width="150" />
 
 
 3. Paste the URL of this GitHub repository and confirm.
@@ -31,7 +31,5 @@ Architotem Turtle wow Multilenguage is a fork based on the original work by code
 
 
 
-
-<img src="https://github.com/user-attachments/assets/d448633c-0624-4459-8e63-14798ba9c0c7" width="150" />
 
 
