@@ -17,12 +17,15 @@ Architotem Turtle wow Multilenguage is a fork based on the original work by code
 5. **New feature:** Added **"Call All Totems"** functionality to summon Earth, Fire, Water, and Air totems in one click.
 
 
-## Pasos de instalación
-1. Click on "Download Zip" and extract the file.
+## 📦 Installation (Turtle WoW Launcher)
 
-   <img src="https://github.com/user-attachments/assets/d448633c-0624-4459-8e63-14798ba9c0c7" width="150" />
+1. Open the **Turtle WoW Launcher** and go to the **ADDONS** tab.
+2. Click the **“➕ Añadir nuevo addon”** button at the bottom.
    
-2. Inside the extracted folder, rename Architotem Turtle WoW - Multilanguage-main to Architotem
-3. Place it in the game's addons folder:
-   `Your_Game_Folder/Interface/AddOns/`.
+   ![Add addon button](![image](https://github.com/user-attachments/assets/a8255cbb-e00e-46c4-860f-cb67b6c63d67)) <!-- Reemplaza con la ruta correcta o URL -->
+
+3. Paste the URL of this GitHub repository and confirm.
+4. The addon **ArchiTotem-TurtleWoW** should appear in your list.
+5. Launch the game and ensure the addon is enabled in the AddOns menu.
+
 
