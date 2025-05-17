@@ -1,11 +1,11 @@
 ## Interface: 11200
-## Title: ArchiTotem |cff007fff [TurtleWoW-multilenguage]|r
+## Title: ArchiTotem-TurtleWoW
 ## Notes: Architotem - TurtleWoW multilenguage
-## Version: 1.6.2.2
+## Version: 1.6.4
 ## Author: Zalrak (South_Seas SA)
 ## X-Original: Nahoom of Dragonblight EU
 ## X-Credits: RoadBlock, Lichery - localizations, Durotavich
-## SavedVariablesPerCharacter: ArchiTotem_TotemData, ArchiTotem_Options
+## SavedVariablesPerCharacter: ArchiTotem_TotemInfo, ArchiTotem_Config
 
 Locale\Localization.xml
 ArchiTotem.xml

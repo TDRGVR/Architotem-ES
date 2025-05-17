@@ -1,8 +1,7 @@
 local _G = getfenv()
 local L = ArchiTotemLocale
-local version = GetAddOnMetadata("ArchiTotem", "Version")
-local author = GetAddOnMetadata("ArchiTotem", "Author")
-
+local version = GetAddOnMetadata("ArchiTotem-TurtleWoW", "Version")
+local author = GetAddOnMetadata("ArchiTotem-TurtleWoW", "Author")
 local _, class = UnitClass("player")
 local CLOCK_UPDATE_RATE = 0.1
 ArchiTotemCasted = nil
@@ -11,7 +10,7 @@ ArchiTotemCastedElement = nil
 ArchiTotemCastedButton = nil
 ArchiTotemActiveTotem = {}
 
-local totemElements = { "Earth", "Fire", "Water", "Air", "Totemic" }
+local totemElements = { "Earth", "Fire", "Water", "Air", "Totemic", "Call" }
 
 local ArchiTotemPopout = {
     -- Earth Totems
@@ -42,52 +41,39 @@ local ArchiTotemPopout = {
 
     -- Totemic Totem
     "ArchiTotemButton_Totemic1",
+	-- Call al totem
+    "ArchiTotemButton_Call1",
 }
 
-
-if not ArchiTotem_Options then
-    ArchiTotem_Options = {
-        Ear = {
-            max = 5,
-            shown = 1
-        },
-        Fir = {
-            max = 5,
-            shown = 1
-        },
-        Wat = {
-            max = 5,
-            shown = 1
-        },
-        Air = {
-            max = 7,
-            shown = 1
-        },
-        Tot = {
-            max = 1,
-            shown = 1
-        },
-        Appearance = {
-            direction = "up",
-            scale = 1,
-            allonmouseover = false,
-            bottomoncast = true,
-            shownumericcooldowns = true,
-            showtooltips = true
-        },
-        Order = {
-            first = "Earth",
-            second = "Fire",
-            third = "Water",
-            forth = "Air",
-            fifth = "Totemic"
-        },
-        Debug = false
-    }
+if not ArchiTotem_Config then
+    ArchiTotem_Config = {
+		Ear = { max = 5, shown = 1 },
+		Fir = { max = 5, shown = 1 },
+		Wat = { max = 5, shown = 1 },
+		Air = { max = 7, shown = 1 },
+		Tot = { max = 1, shown = 1 },
+		Cal = { max = 1, shown = 1 },
+		Appearance = {
+			direction = "up",
+			scale = 1,
+			allonmouseover = false,
+			bottomoncast = true,
+			shownumericcooldowns = true,
+			showtooltips = true
+		},
+		Order = {
+			first = "Earth",
+			second = "Fire",
+			third = "Water",
+			forth = "Air",
+			fifth = "Totemic"
+		},
+		Debug = false
+	}
 end
 
-if not ArchiTotem_TotemData then
-    ArchiTotem_TotemData = {}
+if not ArchiTotem_TotemInfo then
+    ArchiTotem_TotemInfo = {}
 
     local earthTotems = {
         {
@@ -287,10 +273,21 @@ if not ArchiTotem_TotemData then
             buff = false
         }
     }
+	
+    local callTotems = {
+        {
+            button = "ArchiTotemButton_Call1",
+            icon = "Interface\\Icons\\Spell_nature_elementalabsorption",
+            name = "Call of Elements",
+            duration = 0,
+            cooldown = 6,
+            buff = false
+        }
+    }
 
 
     local function addTotemData(button, icon, name, duration, cooldown, buff)
-        ArchiTotem_TotemData[button] = {
+        ArchiTotem_TotemInfo[button] = {
             icon = icon,
             name = name,
             duration = duration,
@@ -308,6 +305,7 @@ if not ArchiTotem_TotemData then
         { group = "waterTotems",   data = waterTotems },
         { group = "airTotems",     data = airTotems },
         { group = "totemicTotems", data = totemicTotems },
+		{ group = "callTotems",  data = callTotems },
     }
 
     -- Iterate over all totems and add their data
@@ -377,7 +375,7 @@ function ArchiTotem_UpdateCooldown(buttonName, duration)
         -- Set the cooldown timer
         CooldownFrame_SetTimer(cooldownFrame, GetTime(), duration, 1)
     else
-        if ArchiTotem_Options["Debug"] then
+        if ArchiTotem_Config["Debug"] then
             ArchiTotem_Print("+++++" .. buttonName .. " NOT FOUND")
         end
     end
@@ -388,12 +386,12 @@ function ArchiTotem_ActiveTotem()
     local currentTime = GetTime()
     ArchiTotemActiveTotem[ArchiTotemCastedElement] = ArchiTotemCastedTotem
     ArchiTotemActiveTotem[ArchiTotemCastedElement].casted = currentTime
-    ArchiTotem_TotemData[ArchiTotemCastedButton].cooldownstarted = currentTime
+    ArchiTotem_TotemInfo[ArchiTotemCastedButton].cooldownstarted = currentTime
 
     ArchiTotem_UpdateAllCooldowns_by_elementType(ArchiTotemCastedElement)
 
     -- Handle bottom-on-cast appearance option
-    if ArchiTotem_Options["Appearance"].bottomoncast then
+    if ArchiTotem_Config["Appearance"].bottomoncast then
         local buttonNumber = tonumber(string.sub(ArchiTotemCastedButton, -1))
 
         if buttonNumber > 1 then
@@ -407,14 +405,14 @@ function ArchiTotem_ActiveTotem()
                 ArchiTotem_Switch(topButton, bottomButton)
 
                 -- Set cooldown timer for top button if not started
-                if not ArchiTotem_TotemData[topButton].cooldownstarted then
+                if not ArchiTotem_TotemInfo[topButton].cooldownstarted then
                     CooldownFrame_SetTimer(_G[topButton .. "Cooldown"], GetTime(), 1.5, 1)
                 end
             end
 
             -- Set cooldown for the bottom button
             local bottomButton = baseButtonName .. 1
-            local duration = ArchiTotem_TotemData[bottomButton].cooldown
+            local duration = ArchiTotem_TotemInfo[bottomButton].cooldown
             duration = (duration == 0) and 1.5 or duration -- Default to 1.5 if duration is 0
             CooldownFrame_SetTimer(_G[bottomButton .. "Cooldown"], GetTime(), duration, 1)
         end
@@ -431,10 +429,10 @@ function ArchiTotem_OnEvent(event, arg1)
         ArchiTotem_ClearAllCooldowns()
         ArchiTotem_UpdateTextures()
         ArchiTotem_UpdateShown()
-        ArchiTotem_SetDirection(ArchiTotem_Options["Appearance"].direction)
-        ArchiTotem_SetScale(ArchiTotem_Options["Appearance"].scale)
-        ArchiTotem_Order(ArchiTotem_Options["Order"].first, ArchiTotem_Options["Order"].second,
-            ArchiTotem_Options["Order"].third, ArchiTotem_Options["Order"].forth)
+        ArchiTotem_SetDirection(ArchiTotem_Config["Appearance"].direction)
+        ArchiTotem_SetScale(ArchiTotem_Config["Appearance"].scale)
+        ArchiTotem_Order(ArchiTotem_Config["Order"].first, ArchiTotem_Config["Order"].second,
+            ArchiTotem_Config["Order"].third, ArchiTotem_Config["Order"].forth)
     elseif event == "CHAT_MSG_SPELL_FAILED_LOCALPLAYER" then
         ArchiTotemCasted = 0
     elseif event == "SPELLCAST_STOP" then
@@ -446,10 +444,10 @@ function ArchiTotem_OnEvent(event, arg1)
         local _, _, totemicRecall, _ = string.find(arg1, "from (%w+) Recall.")
         if castedTotem ~= nil then
             local totemCastedName = castedTotem .. " Totem"
-            for totem in ArchiTotem_TotemData do
-                if totemCastedName == ArchiTotem_TotemData[totem].name then
+            for totem in ArchiTotem_TotemInfo do
+                if totemCastedName == ArchiTotem_TotemInfo[totem].name then
                     ArchiTotemCasted = 1
-                    ArchiTotemCastedTotem = ArchiTotem_TotemData[totem]
+                    ArchiTotemCastedTotem = ArchiTotem_TotemInfo[totem]
                     ArchiTotemCastedElement = string.sub(totem, 18, -2)
                     ArchiTotemCastedButton = totem
                     ArchiTotem_ActiveTotem()
@@ -490,7 +488,7 @@ function ArchiTotem_OnEvent(event, arg1)
 
         -- Process each active totem
         for k, totem in pairs(ArchiTotemActiveTotem) do
-            for _, data in pairs(ArchiTotem_TotemData) do
+            for _, data in pairs(ArchiTotem_TotemInfo) do
                 if k ~= nil and totem.duration > 0 and data.name == totem.name then
                     if outOfRange[totem.name] and totem.buff then
                         _G[k .. "DurationText"]:SetTextColor(1, 0, 0)
@@ -527,12 +525,12 @@ end
 
 function ArchiTotem_OnEnter()
     -- When entering a button, show all totems of that element
-    if ArchiTotem_Options["Appearance"].allonmouseover == true then
+    if ArchiTotem_Config["Appearance"].allonmouseover == true then
         for _, v in totemElements do
             -- For all the elements
             local threeLetterElement = string.sub(v, 1, 3)
             -- Get the 3 first letters of the element
-            for i = 1, ArchiTotem_Options[threeLetterElement].max do
+            for i = 1, ArchiTotem_Config[threeLetterElement].max do
                 -- For all buttons of that element
                 _G["ArchiTotemButton_" .. v .. i]:Show()
             end
@@ -542,7 +540,7 @@ function ArchiTotem_OnEnter()
         -- ArchiTotemButton_Earth, ArchiTotemButton_Fire..
         local maxOfElement = string.sub(this:GetName(), 18, 20)
         -- Get the 3 first letters of the element: "Ear", "Fir"..
-        for i = 2, ArchiTotem_Options[maxOfElement].max do
+        for i = 2, ArchiTotem_Config[maxOfElement].max do
             -- For all buttons
             local button = _G[totemElement .. i]
             if button then
@@ -550,10 +548,17 @@ function ArchiTotem_OnEnter()
             end
         end
     end
+	
+    if ArchiTotem_Config["Appearance"].showtooltips == true then
+        if this:GetName() == "ArchiTotemButton_Call1" then
+            GameTooltip_SetDefaultAnchor(GameTooltip, this)
+            GameTooltip:SetText(L["Call of Elements"], 1, 1, 1)
+            GameTooltip:Show()
+            return
+        end
 
-    if ArchiTotem_Options["Appearance"].showtooltips == true then
-        if ArchiTotem_TotemData[this:GetName()] then
-            local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemData[this:GetName()].name)
+        if ArchiTotem_TotemInfo[this:GetName()] then
+            local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemInfo[this:GetName()].name)
             if tooltipspellID > 0 then
                 GameTooltip_SetDefaultAnchor(GameTooltip, this)
                 GameTooltip:SetSpell(tooltipspellID, SpellBookFrame.bookType)
@@ -598,24 +603,78 @@ function ArchiTotem_OnClick()
         -- Earth3, Fire2..
         local maxOfElement = string.sub(this:GetName(), 18, 20)
         -- Get the 3 first letters of the element: "Ear", "Fir"..
-        if overTotemNumber < ArchiTotem_Options[maxOfElement].max + 1 then
+        if overTotemNumber < ArchiTotem_Config[maxOfElement].max + 1 then
             -- If there is a totem over the one you clicked
             ArchiTotem_Switch(this:GetName(), overTotem)
             -- Switch them (the clicked and the one above)
         end
     else
-		local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemData[this:GetName()].name)
+		if this:GetName() == "ArchiTotemButton_Call1" then
+			ArchiTotem_CallAllTotems()
+			return
+		end
+	
+	
+		local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemInfo[this:GetName()].name)
 		if tooltipspellID > 0 then
 			ArchiTotem_CastTotem()
 		end
     end
 end
 
+function ArchiTotem_CallAllTotems()
+    local totemElements = { "Earth", "Fire", "Water", "Air" }
+
+    for _, element in ipairs(totemElements) do
+        local btnName = "ArchiTotemButton_" .. element .. "1"
+        local info = ArchiTotem_TotemInfo[btnName]
+
+        if info and info.name then
+            local spellID = ArchiTotem_GetSpellId(info.name)
+
+            if spellID and spellID > 0 then
+                local start, duration, enabled = GetSpellCooldown(spellID, BOOKTYPE_SPELL)
+                local remaining = (start + duration) - GetTime()
+
+                if enabled == 1 and (start == 0 or remaining <= 0) then
+                    CastSpellByName(L[info.name])
+
+                    -- Simular datos de casteo
+                    local now = GetTime()
+                    ArchiTotemCastedButton = btnName
+                    ArchiTotemCastedTotem = info
+                    ArchiTotemCastedElement = element
+
+                    info.casted = now
+                    info.cooldownstarted = now
+                    ArchiTotemActiveTotem[element] = info
+
+                    ArchiTotem_UpdateAllCooldowns_by_elementType(element)
+
+                    -- Mostrar texto de duración
+                    local durationText = _G[element .. "DurationText"]
+                    if durationText then
+                        durationText:SetText(info.duration or "")
+                        durationText:Show()
+                    end
+                end
+            end
+        end
+    end
+
+    -- Limpieza de variables temporales
+    ArchiTotemCasted = nil
+    ArchiTotemCastedTotem = nil
+    ArchiTotemCastedButton = nil
+    ArchiTotemCastedElement = nil
+end
+
+
 function ArchiTotem_CastTotem()
     -- Initialize casting state and store relevant information
     ArchiTotemCasted = 1
     ArchiTotemCastedButton = this:GetName()
-    ArchiTotemCastedTotem = ArchiTotem_TotemData[ArchiTotemCastedButton]
+    ArchiTotemCastedTotem = ArchiTotem_TotemInfo[ArchiTotemCastedButton]
     ArchiTotemCastedElement = string.sub(ArchiTotemCastedButton, 18, -2)
 
     if not ArchiTotemCastedTotem.casted then
@@ -640,7 +699,7 @@ function ArchiTotem_CastTotem()
     CastSpellByName(localizedSpell)
 
     -- Handle Totemic Recall cleanup
-    if localizedSpell == "Totemic Recall" then
+    if localizedSpell == L["Totemic Recall"] then
         for totemName, _ in pairs(ArchiTotemActiveTotem) do
             if totemName and totemName ~= "Totemic" then
                 local durationText = _G[totemName .. "DurationText"]
@@ -657,8 +716,8 @@ end
 function ArchiTotem_Switch(arg1, arg2)
     -- Swap the data of two totems and update their textures and cooldowns
     -- Swap the totem data
-    ArchiTotem_TotemData[arg1], ArchiTotem_TotemData[arg2] =
-        ArchiTotem_TotemData[arg2], ArchiTotem_TotemData[arg1]
+    ArchiTotem_TotemInfo[arg1], ArchiTotem_TotemInfo[arg2] =
+        ArchiTotem_TotemInfo[arg2], ArchiTotem_TotemInfo[arg1]
 
     -- Hide cooldown text and background for both totems
     for _, arg in ipairs({ arg1, arg2 }) do
@@ -670,7 +729,7 @@ function ArchiTotem_Switch(arg1, arg2)
 
     -- Update cooldown frames for each totem
     for _, arg in ipairs({ arg1, arg2 }) do
-        local totemData = ArchiTotem_TotemData[arg]
+        local totemData = ArchiTotem_TotemInfo[arg]
         local spellID = ArchiTotem_GetSpellId(totemData.name)
 
         if spellID and spellID ~= 0 then
@@ -688,7 +747,7 @@ end
 
 function ArchiTotem_ClearAllCooldowns()
     -- Clear all the cooldowns of the totems, or strange things may happen when loggin in
-    for k, v in ArchiTotem_TotemData do
+    for k, v in ArchiTotem_TotemInfo do
         v.cooldownstarted = nil
     end
 end
@@ -699,9 +758,9 @@ function ArchiTotem_UpdateTextures()
         -- For all the elements
         local threeLetterElement = string.sub(v, 1, 3)
         -- Get the 3 first letters of the element
-        for i = 1, ArchiTotem_Options[threeLetterElement].max do
+        for i = 1, ArchiTotem_Config[threeLetterElement].max do
             -- For all buttons of that element
-            _G["ArchiTotemButton_" .. v .. i .. "Texture"]:SetTexture(ArchiTotem_TotemData
+            _G["ArchiTotemButton_" .. v .. i .. "Texture"]:SetTexture(ArchiTotem_TotemInfo
                 ["ArchiTotemButton_" .. v .. i].icon)
             -- Set the texture
         end
@@ -714,9 +773,9 @@ function ArchiTotem_UpdateShown()
         -- For all the elements
         local threeLetterElement = string.sub(v, 1, 3)
         -- Get the 3 first letters of the element
-        for i = 1, ArchiTotem_Options[threeLetterElement].max do
+        for i = 1, ArchiTotem_Config[threeLetterElement].max do
             -- For all buttons of that element
-            if i <= ArchiTotem_Options[threeLetterElement].shown then
+            if i <= ArchiTotem_Config[threeLetterElement].shown then
                 _G["ArchiTotemButton_" .. v .. i]:Show()
             else
                 _G["ArchiTotemButton_" .. v .. i]:Hide()
@@ -726,7 +785,7 @@ function ArchiTotem_UpdateShown()
 end
 
 function ArchiTotem_UpdateAllCooldowns()
-    for k, v in ArchiTotem_TotemData do
+    for k, v in ArchiTotem_TotemInfo do
         -- Handles the cooldowns of all totems
         if v.casted == nil then 
 			v.casted = GetTime() - v.cooldown 
@@ -744,8 +803,8 @@ function ArchiTotem_UpdateAllCooldowns()
 end
 
 function ArchiTotem_UpdateAllCooldowns_by_elementType(elementType)
-    for k, v in pairs(ArchiTotem_TotemData) do
-        local buttonElement = string.match(k, "ArchiTotemButton_(%a+)%d+")
+    for k, v in pairs(ArchiTotem_TotemInfo) do
+        local _, _, buttonElement = string.find(k, "ArchiTotemButton_(%a+)%d+")
         
         if not elementType or buttonElement == elementType then
             
@@ -774,7 +833,7 @@ end
 
 function ArchiTotem_SetDirection(dir)
     -- Set the direction for totems to pop up when hovering
-    ArchiTotem_Options["Appearance"].direction = dir
+    ArchiTotem_Config["Appearance"].direction = dir
 
     -- Define anchor points and duration text offsets
     local anchor1, anchor2, offset
@@ -802,7 +861,7 @@ function ArchiTotem_SetDirection(dir)
     -- Adjust the anchor points for all totem buttons
     for _, element in ipairs(totemElements) do
         local elementKey = string.sub(element, 1, 3) -- Get the 3-letter element key
-        local maxButtons = ArchiTotem_Options[elementKey].max
+        local maxButtons = ArchiTotem_Config[elementKey].max
 
         for i = 2, maxButtons do
             local currentButton = _G["ArchiTotemButton_" .. element .. i]
@@ -833,10 +892,11 @@ function ArchiTotem_Order(first, second, third, forth)
         formatElement(third),
         formatElement(forth),
         "ArchiTotemButton_Totemic1",
+        "ArchiTotemButton_Call1",
     }
 
     -- Save the order in options
-    ArchiTotem_Options["Order"] = {
+    ArchiTotem_Config["Order"] = {
         first = strupper(string.sub(first, 1, 1)) .. string.sub(first, 2),
         second = strupper(string.sub(second, 1, 1)) .. string.sub(second, 2),
         third = strupper(string.sub(third, 1, 1)) .. string.sub(third, 2),
@@ -862,13 +922,13 @@ end
 
 function ArchiTotem_SetScale(scale)
     -- Sets the scale of the entire ArchiTotem frame
-    ArchiTotem_Options["Appearance"].scale = scale
+    ArchiTotem_Config["Appearance"].scale = scale
     -- Save the scale
     for k, v in totemElements do
         -- For all the elements
         local threeLetterElement = string.sub(v, 1, 3)
         -- Get the 3 first letters of the element
-        for i = 1, ArchiTotem_Options[threeLetterElement].max do
+        for i = 1, ArchiTotem_Config[threeLetterElement].max do
             -- For all buttons of that element
             _G["ArchiTotemButton_" .. v .. i]:SetScale(scale)
             -- Set the scale
@@ -903,9 +963,9 @@ function ArchiTotem_OnUpdate(arg1)
                 end
             end
         end
-        for k, v in ArchiTotem_TotemData do
+        for k, v in ArchiTotem_TotemInfo do
             -- Handles the cooldowns of all totems
-            if ArchiTotem_Options["Appearance"].shownumericcooldowns == true then
+            if ArchiTotem_Config["Appearance"].shownumericcooldowns == true then
                 if v.cooldownstarted == nil then
                 else
                     if GetTime() > (v.cooldownstarted + v.cooldown) then
@@ -947,25 +1007,25 @@ function ArchiTotem_Command(cmd)
         -- /at set, how many totems an element will show with no mouseover
         if arg[2] == "earth" then
             if tonumber(arg[3]) > 0 and tonumber(arg[3]) <= 5 then
-                ArchiTotem_Options["Ear"].shown = tonumber(arg[3])
+                ArchiTotem_Config["Ear"].shown = tonumber(arg[3])
                 ArchiTotem_UpdateShown()
                 ArchiTotem_Print(L["Earth totems shown: "] .. arg[3])
             end
         elseif arg[2] == "fire" then
             if tonumber(arg[3]) > 0 and tonumber(arg[3]) <= 5 then
-                ArchiTotem_Options["Fir"].shown = tonumber(arg[3])
+                ArchiTotem_Config["Fir"].shown = tonumber(arg[3])
                 ArchiTotem_UpdateShown()
                 ArchiTotem_Print(L["Fire totems shown: "] .. arg[3])
             end
         elseif arg[2] == "water" then
             if tonumber(arg[3]) > 0 and tonumber(arg[3]) <= 6 then
-                ArchiTotem_Options["Wat"].shown = tonumber(arg[3])
+                ArchiTotem_Config["Wat"].shown = tonumber(arg[3])
                 ArchiTotem_UpdateShown()
                 ArchiTotem_Print(L["Water totems shown: "] .. arg[3])
             end
         elseif arg[2] == "air" then
             if tonumber(arg[3]) > 0 and tonumber(arg[3]) <= 7 then
-                ArchiTotem_Options["Air"].shown = tonumber(arg[3])
+                ArchiTotem_Config["Air"].shown = tonumber(arg[3])
                 ArchiTotem_UpdateShown()
                 ArchiTotem_Print(L["Air totems shown: "] .. arg[3])
             end
@@ -1006,29 +1066,29 @@ function ArchiTotem_Command(cmd)
         end
     elseif arg[1] == "showall" then
         -- /at showall, toggle showing of all totems on mouseover
-        if ArchiTotem_Options["Appearance"].allonmouseover == false then
-            ArchiTotem_Options["Appearance"].allonmouseover = true
+        if ArchiTotem_Config["Appearance"].allonmouseover == false then
+            ArchiTotem_Config["Appearance"].allonmouseover = true
             ArchiTotem_Print(L["Showing all totems on mouseover"])
         else
-            ArchiTotem_Options["Appearance"].allonmouseover = false
+            ArchiTotem_Config["Appearance"].allonmouseover = false
             ArchiTotem_Print(L["Showing only one element on mouseover"])
         end
     elseif arg[1] == "bottomcast" then
-        if ArchiTotem_Options["Appearance"].bottomoncast == false then
-            ArchiTotem_Options["Appearance"].bottomoncast = true
+        if ArchiTotem_Config["Appearance"].bottomoncast == false then
+            ArchiTotem_Config["Appearance"].bottomoncast = true
             ArchiTotem_Print(L["Totems will move the the bottom line when cast"])
         else
-            ArchiTotem_Options["Appearance"].bottomoncast = false
+            ArchiTotem_Config["Appearance"].bottomoncast = false
             ArchiTotem_Print(L["Totems will stay where they are when cast"])
         end
     elseif arg[1] == "timers" then
-        if ArchiTotem_Options["Appearance"].shownumericcooldowns == false then
-            ArchiTotem_Options["Appearance"].shownumericcooldowns = true
+        if ArchiTotem_Config["Appearance"].shownumericcooldowns == false then
+            ArchiTotem_Config["Appearance"].shownumericcooldowns = true
             ArchiTotem_Print(L["Timers are now turned on"])
         else
-            ArchiTotem_Options["Appearance"].shownumericcooldowns = false
+            ArchiTotem_Config["Appearance"].shownumericcooldowns = false
             ArchiTotem_Print(L["Timers are now turned off"])
-            for k, v in ArchiTotem_TotemData do
+            for k, v in ArchiTotem_TotemInfo do
                 _G[k .. "CooldownText"]:Hide()
                 _G[k .. "CooldownBg"]:Hide()
                 v.cooldownstarted = nil
@@ -1038,19 +1098,19 @@ function ArchiTotem_Command(cmd)
             end
         end
     elseif arg[1] == "tooltip" then
-        if ArchiTotem_Options["Appearance"].showtooltips == false then
-            ArchiTotem_Options["Appearance"].showtooltips = true
+        if ArchiTotem_Config["Appearance"].showtooltips == false then
+            ArchiTotem_Config["Appearance"].showtooltips = true
             ArchiTotem_Print(L["Tooltips are now turned on"])
         else
-            ArchiTotem_Options["Appearance"].showtooltips = false
+            ArchiTotem_Config["Appearance"].showtooltips = false
             ArchiTotem_Print(L["Tooltips are now turned off"])
         end
     elseif arg[1] == "debug" then
-        if ArchiTotem_Options["Debug"] == false then
-            ArchiTotem_Options["Debug"] = true
+        if ArchiTotem_Config["Debug"] == false then
+            ArchiTotem_Config["Debug"] = true
             ArchiTotem_Print(L["Debuging are now turned on"])
         else
-            ArchiTotem_Options["Debug"] = false
+            ArchiTotem_Config["Debug"] = false
             ArchiTotem_Print(L["Debuging are now turned off"])
         end
     elseif arg[1] == nil then

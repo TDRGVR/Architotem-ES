@@ -31,6 +31,10 @@ L["Windwall Totem"] = "Windwall Totem"
 
 L["Totemic Recall"] = "Totemic Recall"
 
+L["Call of Elements"] = "Totemic Call"
+
+L["TotemCooldown"] = "%s totem is on cooldown."
+L["TotemSpellNotFound"] = "%s totem spell not found."
 L["ver."] = "ver."
 L["loaded"] = "loaded"
 L["Earth totems shown: "] = "Earth totems shown: "
