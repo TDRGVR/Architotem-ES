@@ -8,12 +8,14 @@ This addon is compatible with the following languages:
 
 Architotem Turtle wow Multilenguage is a fork based on the original work by codeshard with the addon ArchiTotem Turtle [Codeshard architotem](https://github.com/codeshard/ArchiTotem)
 
-In this version, the following improvements have been made:
+### 🔧 Changes in this version:
 
-1. Multilanguage support.
-2. Fixed the error message popup when playing in other languages (ES/BR).
-3. Fixed a visual bug related to cooldowns.
-
+1. Renamed the addon to **ArchiTotem-TurtleWoW** to reflect all customization and adaptation work.  
+2. Fixed a bug where the totem icon was activated even if the player hadn't learned it.  
+3. Fixed a Lua compatibility issue by replacing `string.match` with `string.find`, resolving errors on some clients.  
+4. Improved multilanguage support (ES/BR/EN).  
+5. Minor UI fixes and cooldown display improvements.  
+6. **New feature:** Added **"Call All Totems"** functionality to summon Earth, Fire, Water, and Air totems in one click.
 
 
 ## Pasos de instalación
@@ -25,12 +27,3 @@ In this version, the following improvements have been made:
 3. Place it in the game's addons folder:
    `Your_Game_Folder/Interface/AddOns/`.
 
-
-
-
-## Cambios realizados
-
-1. Multilanguage support.
-2. Fixed the error message popup when playing in other languages (ES/BR).
-3. Fixed a visual bug related to cooldowns.
-4. Fixed a bug where the totem icon was activated even if the player hadn't learned it.
