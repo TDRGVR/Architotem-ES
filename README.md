@@ -18,6 +18,17 @@ Architotem Turtle wow Multilenguage is a fork based on the original work by code
 5. Launch the game and ensure the addon is enabled in the AddOns menu.
 
 
+## ⚠️ Important Requirement
+
+To ensure correct functionality of the addon, you **must have the following Turtle WoW mod enabled**:
+
+> ✅ **nampower v2.10.0 or higher**
+
+Make sure it is activated in the **MODS** section of the Turtle WoW launcher:
+
+<img src="https://github.com/user-attachments/assets/3084902b-41cf-4548-9515-d93f4f615297" width="150" />
+
+Without this mod, some parts of the addon (like cooldown tracking or tooltips) may not work properly.
 
 
 
