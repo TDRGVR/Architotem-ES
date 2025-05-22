@@ -273,7 +273,7 @@ if not ArchiTotem_TotemInfo then
             buff = false
         }
     }
-	
+
     local callTotems = {
         {
             button = "ArchiTotemButton_Call1",
@@ -548,7 +548,7 @@ function ArchiTotem_OnEnter()
             end
         end
     end
-	
+
     if ArchiTotem_Config["Appearance"].showtooltips == true then
         if this:GetName() == "ArchiTotemButton_Call1" then
             GameTooltip_SetDefaultAnchor(GameTooltip, this)
@@ -613,8 +613,8 @@ function ArchiTotem_OnClick()
 			ArchiTotem_CallAllTotems()
 			return
 		end
-	
-	
+
+
 		local tooltipspellID = ArchiTotem_GetSpellId(ArchiTotem_TotemInfo[this:GetName()].name)
 		if tooltipspellID > 0 then
 			ArchiTotem_CastTotem()
@@ -787,15 +787,15 @@ end
 function ArchiTotem_UpdateAllCooldowns()
     for k, v in ArchiTotem_TotemInfo do
         -- Handles the cooldowns of all totems
-        if v.casted == nil then 
-			v.casted = GetTime() - v.cooldown 
+        if v.casted == nil then
+			v.casted = GetTime() - v.cooldown
 		end
         local duration = 1.5
         if GetTime() > (v.casted + v.cooldown) then
-            if ArchiTotemCastedButton == k then 
-				duration = v.cooldown 
-			else 
-				duration = 1.5 
+            if ArchiTotemCastedButton == k then
+				duration = v.cooldown
+			else
+				duration = 1.5
 			end
             ArchiTotem_UpdateCooldown(k, duration)
         end
@@ -805,9 +805,9 @@ end
 function ArchiTotem_UpdateAllCooldowns_by_elementType(elementType)
     for k, v in pairs(ArchiTotem_TotemInfo) do
         local _, _, buttonElement = string.find(k, "ArchiTotemButton_(%a+)%d+")
-        
+
         if not elementType or buttonElement == elementType then
-            
+
             -- Inicialización más robusta
             if v.casted == nil then
                 v.casted = GetTime() - v.cooldown
@@ -819,10 +819,10 @@ function ArchiTotem_UpdateAllCooldowns_by_elementType(elementType)
                 local currentTime = GetTime()
                 local elapsed = currentTime - (v.cooldownstarted or currentTime)
                 local remaining = math.max(0, v.cooldown - elapsed)
-                
+
                 -- Forzar visualización aunque el tiempo haya "terminado"
                 ArchiTotem_UpdateCooldown(k, remaining > 0 and remaining or 1.5)
-            
+
             -- Para otros botones, lógica original
             elseif GetTime() > (v.casted + v.cooldown) then
                 ArchiTotem_UpdateCooldown(k, 1.5)
@@ -1135,9 +1135,10 @@ function ArchiTotem_Command(cmd)
     end
 end
 
-
+BINDING_HEADER_ArchiTotemTurtle = "ArchiTotem Turtle"
 BINDING_NAME_CAST_EARTH_TOTEM = ArchiTotemLocale["Cast Earth Totem"] or "Cast Earth Totem"
 BINDING_NAME_CAST_FIRE_TOTEM = ArchiTotemLocale["Cast Fire Totem"] or "Cast Fire Totem"
 BINDING_NAME_CAST_WATER_TOTEM = ArchiTotemLocale["Cast Water Totem"] or "Cast Water Totem"
 BINDING_NAME_CAST_AIR_TOTEM = ArchiTotemLocale["Cast Air Totem"] or "Cast Air Totem"
 BINDING_NAME_CAST_TOTEMIC_RECALL = ArchiTotemLocale["Cast Totemic Recall"] or "Cast Totemic Recall"
+BINDING_NAME_CAST_CALL_OF_ELEMENTS = ArchiTotemLocale["Cast Call of Elements"] or "Cast Call of Elements"

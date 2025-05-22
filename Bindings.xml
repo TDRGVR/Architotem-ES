@@ -1,37 +1,23 @@
 <Bindings>
-	<Binding name="CAST_EARTH_TOTEM" header="ArchiTotem">
-		ArchiTotemCasted = 1
-		ArchiTotemCastedTotem = ArchiTotem_TotemInfo["ArchiTotemButton_Earth1"]
-		ArchiTotemCastedElement = "Earth"
-		ArchiTotemCastedButton = "ArchiTotemButton_Earth1"
-		CastSpellByName(ArchiTotem_TotemInfo["ArchiTotemButton_Earth1"].name)
+	<Binding name="CAST_EARTH_TOTEM" header="ArchiTotemTurtle">
+		ArchiTotemButton_Earth1:Click()
 	</Binding>
-	<Binding name="CAST_FIRE_TOTEM">
-		ArchiTotemCasted = 1
-		ArchiTotemCastedTotem = ArchiTotem_TotemInfo["ArchiTotemButton_Fire1"]
-		ArchiTotemCastedElement = "Fire"
-		ArchiTotemCastedButton = "ArchiTotemButton_Fire1"
-		CastSpellByName(ArchiTotem_TotemInfo["ArchiTotemButton_Fire1"].name)
+
+	<Binding name="CAST_FIRE_TOTEM" header="ArchiTotemTurtle">
+		ArchiTotemButton_Fire1:Click()
 	</Binding>
-	<Binding name="CAST_WATER_TOTEM">
-		ArchiTotemCasted = 1
-		ArchiTotemCastedTotem = ArchiTotem_TotemInfo["ArchiTotemButton_Water1"]
-		ArchiTotemCastedElement = "Water"
-		ArchiTotemCastedButton = "ArchiTotemButton_Water1"
-		CastSpellByName(ArchiTotem_TotemInfo["ArchiTotemButton_Water1"].name)
+
+	<Binding name="CAST_WATER_TOTEM" header="ArchiTotemTurtle">
+		ArchiTotemButton_Water1:Click()
 	</Binding>
-	<Binding name="CAST_AIR_TOTEM">
-		ArchiTotemCasted = 1
-		ArchiTotemCastedTotem = ArchiTotem_TotemInfo["ArchiTotemButton_Air1"]
-		ArchiTotemCastedElement = "Air"
-		ArchiTotemCastedButton = "ArchiTotemButton_Air1"
-		CastSpellByName(ArchiTotem_TotemInfo["ArchiTotemButton_Air1"].name)
+
+	<Binding name="CAST_AIR_TOTEM" header="ArchiTotemTurtle">
+		ArchiTotemButton_Air1:Click()
 	</Binding>
-	<Binding name="CAST_TOTEMIC_RECALL">
-		ArchiTotemCasted = 1
-		ArchiTotemCastedTotem = ArchiTotem_TotemInfo["ArchiTotemButton_Totemic1"]
-		ArchiTotemCastedElement = "Totemic"
-		ArchiTotemCastedButton = "ArchiTotemButton_Totemic1"
-		CastSpellByName(ArchiTotem_TotemInfo["ArchiTotemButton_Totemic1"].name)
+	<Binding name="CAST_TOTEMIC_RECALL" header="ArchiTotemTurtle">
+		ArchiTotemButton_Totemic1:Click()
+	</Binding>
+	<Binding name="CAST_CALL_OF_ELEMENTS" header="ArchiTotemTurtle">
+		ArchiTotem_CallAllTotems()
 	</Binding>
 </Bindings>
